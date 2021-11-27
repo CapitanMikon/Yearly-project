@@ -1,0 +1,116 @@
+import SimpleVidInfoParser
+import subprocess as sp
+import numpy as np
+from os import mkdir, path
+from pathlib import Path
+import sys
+import datetime
+
+
+class VideoReader:
+    __FFMPEG_path = None
+
+    def __init__(self, write_warns_errors):
+        self.__write_warns_errors = write_warns_errors
+        if self.__write_warns_errors:
+            print("\n\t[warns and errors will be written to \"warnings_errors.txt\"]\n")
+        self.__file_path = None
+        self.__command = None
+        self.__pipe = None
+        self.__video_width = None
+        self.__video_height = None
+        self.__counter = None
+        self.__file = None
+        self.__simple_vid_parser = SimpleVidInfoParser.SimpleVidInfoParser(self.__FFMPEG_path)
+
+    def __process_frame(self):
+        n_bytes = 3 * self.__video_width * self.__video_height
+        try:
+            read_bytes = self.__pipe.stdout.read(n_bytes)
+            if len(read_bytes) == 0:
+                self.__file.close()
+                return False
+            assert len(read_bytes) == n_bytes
+            result = np.fromstring(read_bytes, dtype='uint8')
+            r = 0
+            g = 0
+            b = 0
+            factor = self.__video_height * self.__video_width
+            count = 0
+            for value in result:
+                if count % 3 == 0:
+                    r += value
+                elif count % 3 == 1:
+                    g += value
+                else:
+                    b += value
+                count += 1
+            r /= factor
+            g /= factor
+            b /= factor
+            self.__file.write("%s\n" % ("{:.10f}".format(self.__calculate_luminance(r, g, b))))
+            print("\r%s Processed frame %s!" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__counter), end="")
+            self.__counter += 1
+            return True
+        except IOError:
+            print("An error occurred!")
+            sys.exit(-1)
+        finally:
+            self.__pipe.stdout.flush()
+
+    def __calculate_luminance(self, r, g, b):
+        r_constant = 0.299
+        g_constant = 0.587
+        b_constant = 0.114
+        luminance = (r_constant * r + g_constant * g + b_constant * b)
+        luminance /= 255
+        return luminance
+
+    def process_to_signal(self, filename):
+        if self.__FFMPEG_path is None:
+            print("FFMPEG path not specified!")
+            sys.exit(-1)
+        resolution = self.__parse_little_info(filename)
+        self.__initialize_processing(filename, resolution)
+        print("%s Processing file [%s] (%sx%s)" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__file_path.name, self.__video_width, self.__video_height))
+        while True:
+            if not self.__process_frame():
+                break
+        print("\n%s Successfully processed file [%s] (%sx%s)\n" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__file_path.name, self.__video_width, self.__video_height))
+        self.__finish_and_reset()
+
+    def __parse_little_info(self, filename):
+        return self.__simple_vid_parser.get_video_resolution(filename)
+
+    def __initialize_processing(self, filename, resolution):
+        self.__file_path = Path(filename)
+        self.__command = [self.__FFMPEG_path,
+                          '-i', self.__file_path,
+                          '-f', 'image2pipe',
+                          '-pix_fmt', 'rgb24',
+                          '-vcodec', 'rawvideo', '-']
+        if self.__write_warns_errors:
+            self.__errors_file = open("warnings_errors.txt", "a")
+            self.__pipe = sp.Popen(self.__command, stdout=sp.PIPE, stderr=self.__errors_file, bufsize=10 ** 8)
+        else:
+            self.__pipe = sp.Popen(self.__command, stdout=sp.PIPE, stderr=sp.DEVNULL, bufsize=10 ** 8)
+        self.__video_width = int(resolution[0])
+        self.__video_height = int(resolution[1])
+        self.__counter = 1
+
+        if not path.exists(Path("processed/")):
+            mkdir("processed")
+
+        self.__file = open(Path("processed/%s_luminance.txt" % self.__file_path.stem), "w")
+
+    def __finish_and_reset(self):
+        self.__file.close()
+        if self.__write_warns_errors:
+            self.__errors_file.close()
+        self.__file_path = None
+        self.__command = None
+        self.__pipe = None
+        self.__video_width = None
+        self.__video_height = None
+        self.__counter = None
+        self.__file = None
