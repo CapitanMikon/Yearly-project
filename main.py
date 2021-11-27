@@ -30,5 +30,5 @@ def read_input_file_and_process_files():
 
 
 if __name__ == '__main__':
-    # run_example()
-    read_input_file_and_process_files()
+    run_example()
+    # read_input_file_and_process_files()
