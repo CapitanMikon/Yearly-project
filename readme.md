@@ -2,6 +2,7 @@
 
 Call`process_to_signal(filename) from VideoReader class` in your script to convert desired video file into signal representing its luminance frame by frame in outputted txt file or use included main.py (comment out `run_example()` and uncomment `read_input_file_and_process_files()`) and add video files to be processed into the `input.txt` file. <br><br> File paths can be in either Linux or Windows path format. If its Windows format `read_input_file_and_process_files()` in `main.py` will convert it to Linux format.
 
+requires `numpy` and `pathlib`
 
 # Before **first** use
  - you need to **specify path to ffmpeg.exe**
