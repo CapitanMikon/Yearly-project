@@ -21,7 +21,8 @@ class SimpleVidInfoParser:
         res = [0, 0]
         # print(info)
         for line in info.splitlines()[1:]:
-            if line.startswith("    Stream"):
+            line = line.lstrip()
+            if line.startswith("Stream"):
                 try:
                     video_size = re.search(r" (\d+)x(\d+)[,\s]", line)
                     if video_size:
