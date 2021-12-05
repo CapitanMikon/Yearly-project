@@ -1,6 +1,10 @@
 ```
 Tested with ffmpeg ver. ffmpeg version 4.3.1-2020-11-19-full_build-www.gyan.dev Copyright (c) 2000-2020 the FFmpeg developers
 ##  built with gcc 10.2.0 (Rev5, Built by MSYS2 project)
+
+Should work now with ffmpeg ver. 4.4.1
+
+Tested on Windows 10 ver. 21H1
 ```
 
 # Yearly project
