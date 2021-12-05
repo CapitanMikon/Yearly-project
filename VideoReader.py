@@ -35,19 +35,10 @@ class VideoReader:
             r = 0
             g = 0
             b = 0
-            factor = self.__video_height * self.__video_width
-            count = 0
-            for value in result:
-                if count % 3 == 0:
-                    r += value
-                elif count % 3 == 1:
-                    g += value
-                else:
-                    b += value
-                count += 1
-            r /= factor
-            g /= factor
-            b /= factor
+            factor = float(self.__video_height * self.__video_width)
+            rgb = np.array(result).reshape(self.__video_height, self.__video_width, 3)
+            r, g, b = rgb[:, :, 0].sum() / factor, rgb[:, :, 1].sum() / factor, rgb[:, :, 2].sum() / factor
+
             self.__file.write("%s\n" % ("{:.10f}".format(self.__calculate_luminance(r, g, b))))
             print("\r%s Processed frame %s!" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__counter), end="")
             self.__counter += 1
