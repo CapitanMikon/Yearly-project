@@ -9,7 +9,7 @@ import datetime
 
 
 class VideoReader:
-    __FFMPEG_path = Path("C:/Users/mikon/Downloads/Soft/PortableSoft/Youtube-dl/ffmpeg.exe")
+    __FFMPEG_path = None
 
     def __init__(self, write_warns_errors):
         self.__write_warns_errors = write_warns_errors
