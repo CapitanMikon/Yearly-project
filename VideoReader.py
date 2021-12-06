@@ -1,3 +1,4 @@
+from math import ceil
 import SimpleVidInfoParser
 import subprocess as sp
 import numpy as np
@@ -20,7 +21,9 @@ class VideoReader:
         self.__video_width = None
         self.__video_height = None
         self.__counter = None
+        self.__video_fps = None
         self.__file = None
+        self.__video_total_frames = None
         self.__simple_vid_parser = SimpleVidInfoParser.SimpleVidInfoParser(self.__FFMPEG_path)
 
     def __process_frame(self):
@@ -40,7 +43,7 @@ class VideoReader:
             r, g, b = rgb[:, :, 0].sum() / factor, rgb[:, :, 1].sum() / factor, rgb[:, :, 2].sum() / factor
 
             self.__file.write("%s\n" % ("{:.10f}".format(self.__calculate_luminance(r, g, b))))
-            print("\r%s Processed frame %s!" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__counter), end="")
+            print("\r%s Processed frame %s/%s!" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__counter, self.__video_total_frames), end="")
             self.__counter += 1
             return True
         except IOError:
@@ -63,11 +66,11 @@ class VideoReader:
             sys.exit(-1)
         resolution = self.__parse_little_info(filename)
         self.__initialize_processing(filename, resolution)
-        print("%s Processing file [%s] (%sx%s)" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__file_path.name, self.__video_width, self.__video_height))
+        print("%s Processing file [%s] (%sx%s) %s fps" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__file_path.name, self.__video_width, self.__video_height, "{:.2f}".format(self.__video_fps)))
         while True:
             if not self.__process_frame():
                 break
-        print("\n%s Successfully processed file [%s] (%sx%s)\n" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__file_path.name, self.__video_width, self.__video_height))
+        print("\n%s Successfully processed file [%s] (%sx%s) %s fps\n" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__file_path.name, self.__video_width, self.__video_height, "{:.2f}".format(self.__video_fps)))
         self.__finish_and_reset()
 
     def __parse_little_info(self, filename):
@@ -85,8 +88,10 @@ class VideoReader:
             self.__pipe = sp.Popen(self.__command, stdout=sp.PIPE, stderr=self.__errors_file, bufsize=10 ** 8)
         else:
             self.__pipe = sp.Popen(self.__command, stdout=sp.PIPE, stderr=sp.DEVNULL, bufsize=10 ** 8)
-        self.__video_width = int(resolution[0])
-        self.__video_height = int(resolution[1])
+        self.__video_width = resolution.get("width")
+        self.__video_height = resolution.get("height")
+        self.__video_fps = resolution.get("fps")
+        self.__video_total_frames = self.__calc_total_frames(resolution)
         self.__counter = 1
 
         if not path.exists(Path("processed/")):
@@ -104,4 +109,19 @@ class VideoReader:
         self.__video_width = None
         self.__video_height = None
         self.__counter = None
+        self.__video_total_frames = None
         self.__file = None
+        self.__video_fps = None
+
+    def __duration_to_seconds(self, duration):
+        seconds = 0
+        seconds += duration["seconds_and_milliseconds"]
+        seconds += duration["minutes"]*60
+        seconds += duration["hours"]*60*60
+        return seconds
+
+    def __calc_total_frames(self, parsed_data):
+        frames = 0
+        frames += self.__duration_to_seconds(parsed_data) * ceil(parsed_data.get("fps"))
+        return int(frames)
+

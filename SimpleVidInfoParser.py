@@ -18,22 +18,34 @@ class SimpleVidInfoParser:
         pipe.terminate()
         del pipe
 
-        res = [0, 0]
+        parsed_data = {}
         # print(info)
         for line in info.splitlines()[1:]:
             line = line.lstrip()
             if line.startswith("Stream"):
                 try:
                     video_size = re.search(r" (\d+)x(\d+)[,\s]", line)
+                    video_fps = re.search(r" (\d+.?\d*) fps", line)
                     if video_size:
-                        res[0] = video_size.groups()[0]
-                        res[1] = video_size.groups()[1]
+                        parsed_data["width"] = int(video_size.groups()[0])
+                        parsed_data["height"] = int(video_size.groups()[1])
+                    if video_fps:
+                        parsed_data["fps"] = float(video_fps.groups()[0])
                 except Exception:
                     raise IOError("parsing info exeption!")
-        return res
+            if line.startswith("Duration"):
+                try:
+                    time_raw = line.split(',')
+                    time_raw = time_raw[0].split(':')
+                    parsed_data["seconds_and_milliseconds"] = float(time_raw[3])
+                    time_raw_last = time_raw[3].split('.')
+                    parsed_data["hours"] = int(time_raw[1])
+                    parsed_data["minutes"] = int(time_raw[2])
+                    parsed_data["seconds"] = int(time_raw_last[0])
+                    parsed_data["milliseconds"] = int(time_raw_last[1])
+                except Exception:
+                    raise IOError("parsing info exeption!")
+        return parsed_data
 
     def get_video_resolution(self, filename):
         return self.__parse_small_info(filename)
-
-
-
