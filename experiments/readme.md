@@ -4,5 +4,5 @@
 
 ## Content
 - Currently there are 50 specimens in our collection
-- `specimen_luminance` folder contains luminances of our specimens
-- `specimen info table.txt` contains specimen and youtube link
+- `specimens_luminance` folder contains luminances of our specimens
+- `specimens info table.txt` contains specimen and youtube link
