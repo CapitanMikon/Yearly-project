@@ -1,5 +1,5 @@
 # Introduction
-- This page will contain stuff regarding experiments using my program
+- This page will contain stuff regarding experiments using this program
 - More info will be added later
 
 ## Content
