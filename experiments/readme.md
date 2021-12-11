@@ -13,4 +13,4 @@
  - color space `yuv`
  - framerate `30 fps`
  - duration `1 minute` or `60 seconds`
- - total frames `1800 - 1803`
+ - total frames count `1800 - 1803`
