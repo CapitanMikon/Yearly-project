@@ -1,3 +1,5 @@
+# Introduction
+- This is simple set of tools i have used. They are not much, but if you might need them, use them, edit them etc.
 
 ## Before use:
 
@@ -5,6 +7,7 @@
 - **must** be on using **Windows**!
 - **must** have **yt-dlp** (recommended for faster download speed) or **yt/dl** and **ffmpeg**!
 - **both ffmpeg and yt-dlp must be in same folder as these script othervise it wont work!**
+- You can download this scripts and use and edit on your own
 
 ## Usage:
 
