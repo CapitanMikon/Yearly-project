@@ -13,6 +13,6 @@
  3. You should be able to run this generated `cut_videos_batch2.bat` file which will cut all videos to 1 min. from the begining.
  4. Run `generate_normalize_vid_batch_file.bat`which will generate `normalize_videos_batch2.bat`.
  5. You should be able to run this generated `normalize_videos_batch2.bat` file which will convert all videos to 30 fps.
- 6. (Optional) Run `genereate_file_paths.bat` which will generate video paths which then you can insert into `input.txt` file of my program to create luminance for your videos
+ 6. (Optional) Run `generate_file_paths.bat` which will generate video paths which then you can insert into `input.txt` file of my program to create luminance for your videos
 
 [*tools i used, not guaranteed to work 100%.*]
