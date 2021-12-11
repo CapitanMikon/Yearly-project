@@ -45,10 +45,10 @@ class SimpleVidInfoParser:
                     parsed_data["milliseconds"] = int(time_raw_last[1])
                 except Exception:
                     raise IOError("parsing info exeption!")
-            if line.startswith("frame"):
-                frame_raw = line.split(" ")
-                frame_raw = re.search("frame=\s*(\d+)", line)
-                parsed_data["total_frames"] = int(frame_raw.groups()[0])
+            #if line.startswith("frame"):
+            #    frame_raw = line.split(" ")
+            #    frame_raw = re.search("frame=\s*(\d+)", line)
+            #    parsed_data["total_frames"] = int(frame_raw.groups()[0])
         return parsed_data
 
     def get_video_resolution(self, filename):

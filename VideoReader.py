@@ -1,4 +1,3 @@
-from math import ceil
 import SimpleVidInfoParser
 import subprocess as sp
 import numpy as np
@@ -23,7 +22,6 @@ class VideoReader:
         self.__counter = None
         self.__video_fps = None
         self.__file = None
-        self.__video_total_frames = None
         self.__simple_vid_parser = SimpleVidInfoParser.SimpleVidInfoParser(self.__FFMPEG_path)
 
     def __process_frame(self):
@@ -43,7 +41,7 @@ class VideoReader:
             r, g, b = rgb[:, :, 0].sum() / factor, rgb[:, :, 1].sum() / factor, rgb[:, :, 2].sum() / factor
 
             self.__file.write("%s\n" % ("{:.10f}".format(self.__calculate_luminance(r, g, b))))
-            print("\r%s Processed frame %s/%s!" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__counter, self.__video_total_frames), end="")
+            print("\r%s Processed frame %s!" % (datetime.datetime.now().strftime("[%H:%M:%S %d-%m-%Y]"), self.__counter), end="")
             self.__counter += 1
             return True
         except IOError:
@@ -91,7 +89,6 @@ class VideoReader:
         self.__video_width = resolution["width"]
         self.__video_height = resolution["height"]
         self.__video_fps = resolution["fps"]
-        self.__video_total_frames = resolution["total_frames"]
         self.__counter = 1
 
         if not path.exists(Path("processed/")):
@@ -109,7 +106,6 @@ class VideoReader:
         self.__video_width = None
         self.__video_height = None
         self.__counter = None
-        self.__video_total_frames = None
         self.__file = None
         self.__video_fps = None
 
