@@ -4,7 +4,7 @@
 ## Before use:
 
 - **must** use in order or it wont work!
-- **must** be on using **Windows**!
+- **must** be on **Windows**!
 - **must** have **yt-dlp** (recommended for faster download speed) or **yt/dl** and **ffmpeg**! (where you can get them is located at the bottom of this readme)
 - **both ffmpeg and yt-dlp must be in same folder as these script othervise it wont work!**
 - You can download this scripts and use and edit on your own
