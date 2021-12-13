@@ -6,7 +6,7 @@ from os import path
 
 def run_example():
     reader = VideoReader.VideoReader(False)
-    filepath = Path("sample/sample001.mp4")
+    filepath = Path("sample/sample001.mkv")
     reader.process_to_signal(filepath)
 
 
