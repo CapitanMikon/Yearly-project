@@ -1,5 +1,5 @@
 # Introduction
-- This is simple set of tools i have used. They are not much, but if you might need them, use them, edit them etc.
+- This is a simple set of tools i have used. If you might need them, use them or edit them.
 
 ## Before use:
 
