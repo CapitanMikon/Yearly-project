@@ -20,7 +20,7 @@ requires `numpy` and `pathlib`
 
 ## Sample
 - `Sample001.mp4` is very short 5 frame video
-- Order of frames and its overall rgb value is `rgb(0,0,0), rgb(255,255,255), rgb(254,0,0), rgb(0,254,0), rgb(0,0,254)`
+- Order of frames and its overall rgb value is `rgb(0,0,0), rgb(255,255,255), rgb(255,0,0), rgb(0,255,0), rgb(0,0,255)`
 - outputted file `\processed\sample001_luminance.txt` contains luminance of each frame
 
 *todo -> rework this readme*
